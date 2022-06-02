@@ -7,6 +7,9 @@ const int motor2pin2 = 5;
 //const int speed2 = 10;
 int mySpeed = 100;
 int defSpeed = 100;
+int delay_long = 400;
+int delay_short = 800;
+int ok = 0;
 
 int prev_l = 0;
 int cur_l = 1;
@@ -44,6 +47,13 @@ void loop() {
     } else if (comand == 'a') {
       Serial.print("LEFT\n");
       A_left();
+    } else if (comand == 'q') {
+      ok = 1;
+      Serial.print("Mode changed (short distance)\n");
+    } else if (comand == 'e') {
+      Serial.print("Mode changed (non-stop moving)\n");
+      ok = 0;
+      //delay_short = 
     } else if (comand == 'f') {
       Serial.print("STOP\n");
       Stop();
@@ -64,7 +74,10 @@ void W_forward() {
   
     digitalWrite(motor2pin1, HIGH);
     digitalWrite(motor2pin2, LOW);
-    delay(1000);
+      delay(delay_long);
+    if (ok == 1) {
+      Stop();
+    }
 }
 
 void A_left()
@@ -74,8 +87,11 @@ void A_left()
   
     digitalWrite(motor2pin1, LOW);
     digitalWrite(motor2pin2, HIGH);
-    delay(600);
-    W_forward();
+    delay(delay_short);
+    if (ok == 0)
+      W_forward();
+    else
+      Stop();
 }
 
 void D_right()
@@ -86,8 +102,11 @@ void D_right()
     
     digitalWrite(motor2pin1, HIGH);
     digitalWrite(motor2pin2, LOW);
-    delay(600);
+    delay(delay_short);
+    if (ok == 0)
     W_forward();
+    else
+      Stop();
   }  
 }
 
@@ -97,5 +116,10 @@ void S_back(){
   
     digitalWrite(motor2pin1, LOW);
     digitalWrite(motor2pin2, HIGH);
-    delay(1000);  
+    delay(delay_long);
+    if (ok == 1) {
+      Stop();
+    }
+    //else
+      //delay(delay_long); 
 }
